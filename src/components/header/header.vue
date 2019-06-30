@@ -128,4 +128,5 @@ export default {
   right: 12px;
   top: 8px;
 }
+
 </style>
