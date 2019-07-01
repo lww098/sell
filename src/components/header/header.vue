@@ -27,18 +27,45 @@
     <div class="background">
       <img :src="seller.avatar" width="100%" height="100%" alt="">
     </div>
-    <div class="detail" v-show="detailShow">
-      <div class="detail-wapper clearfix">
-        <div class="detail-main"></div>
+    <transition name='fade'>
+      <div class="detail" v-show="detailShow">
+        <div class="detail-wapper clearfix">
+          <div class="detail-main">
+            <h1 class="name">{{seller.name}}</h1>
+            <div class="star-wrapper">
+              <star :size="48" :score="seller.score"></star>
+            </div>
+            <div class="title">
+              <div class="line"></div>
+              <div class="text">优惠信息</div>
+              <div class="line"></div>
+            </div>
+            <ul class="support" v-if="seller.supports">
+              <li class="support-item"  v-for="(item,index) in seller.supports" :key="index">
+                <span class="icon" :class="classMap[item.type]"></span>
+                <span class="text">{{item.description}}</span>
+              </li>
+            </ul>
+            <div class="title">
+              <div class="line"></div>
+              <div class="text">商家公告</div>
+              <div class=line></div>
+            </div>
+            <div class="bulletin">
+              <p class="content">{{seller.bulletin}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="detail-close" @click="hideDetail">
+          <i class="icon-close"></i>
+        </div>
       </div>
-      <div class="detail-close" @click="hideDetail">
-        <i class="icon-close"></i>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import star from '../../components/star/star'
 export default {
   props: {
     seller: {
@@ -60,6 +87,9 @@ export default {
   },
   created() {
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
+  },
+  components: {
+    star
   }
 };
 </script>
@@ -190,12 +220,82 @@ export default {
     position fixed
     top 0
     left 0
+    opacity 1
     background-color rgba(7,17,27,0.8)
+    backdrop-filter blur(10px)
+    &.fade-enter-active, &.fade-leave-active
+      transition: all 0.5s
+    &.fade-enter, &.fade-leave-to
+      opacity: 0
+      background-color: rgba(7,17,27,0)
     .detail-wapper
       min-height 100%
+      width 100%
       .detail-main
         margin-top 69px
         padding-bottom 64px
+        .name
+          font-size 16px
+          font-weight 700
+          line-height 16px
+          text-align center
+        .star-wrapper
+          margin 16px 0 28px
+          width 100%
+          text-align center
+        .title
+          display flex
+          width 80%
+          margin 0 auto 24px
+          .line
+            flex 1
+            position relative
+            top -8px
+            border-bottom 1px solid rgba(255,255,255,0.2)
+          .text
+            padding 0 12px
+            font-size 14px
+            font-weight 700
+        .support
+          width 80%
+          margin 0 auto 28px
+          .support-item
+            font-size 0
+            height 16px
+            line-height 16px
+            padding 0 12px
+            margin-bottom 12px
+            &:last-child
+              margin-bottom 0
+            .icon
+              display inline-block
+              width 16px
+              height 16px
+              background-size 16px 16px
+              vertical-align top
+              margin-right 6px
+              &.decrease
+                bg-image('decrease_2')
+              &.discount
+                bg-image("discount_2")
+              &.invoice
+                bg-image('invoice_2')
+              &.guarantee
+                bg-image('guarantee_2')
+              &.special
+                bg-image('special_2')
+            .text
+              line-height 16px
+              font-size 12px
+              font-weight 200
+        .bulletin
+          width 80%
+          padding 0 12px
+          margin 0 auto
+          .content
+            font-size 12px
+            font-weight 200
+            line-height 24px
     .detail-close
       margin -64px auto 0 auto
       clear both
