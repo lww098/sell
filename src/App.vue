@@ -45,23 +45,21 @@ export default {
 };
 </script>
 
-<style>
-.tab {
+// <style lang='stylus'>
+@import './common/stylus/index.styl';
+.tab
   display: flex;
+  width 100%
   border-bottom: 1px solid rgba(7, 17, 27, 0.1);
-}
-.tab .tab-item {
-  height: 40px;
-  flex: 1;
-  text-align: center;
-  line-height: 40px;
-}
-.tab .tab-item router-link {
-  color: rgb(77, 85, 93);
-  line-height: 28px;
-  font-size: 28px;
-}
-.active {
-  color: rgb(240, 20, 20);
-}
+  .tab-item
+    height: 40px;
+    flex: 1;
+    text-align: center;
+    line-height: 40px;
+    router-link
+      color: rgb(77, 85, 93);
+      line-height: 28px;
+      font-size: 28px;
+      &.active
+        color: rgb(240, 20, 20);
 </style>
