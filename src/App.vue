@@ -32,7 +32,7 @@ export default {
         var res = response.data;
         if (res.error === 0) {
           this.seller = res.data;
-          console.log(this.seller)
+          // console.log(this.seller)
         }
       })
       .catch(function(error) {
