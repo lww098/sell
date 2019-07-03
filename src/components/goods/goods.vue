@@ -1,50 +1,57 @@
 <template>
-  <div class="goods">
-    <div class="menu-wrapper">
-      <ul>
-        <li class="menu-item" v-for="(item,index) in goods" :key=index>
-          <span class="text">
-            <span class="icon" v-if="item.type>0" :class="classMap[item.type]"></span>{{item.name}}
-          </span>
-        </li>
-      </ul>
-    </div>
-    <div class="good-wrapper">
-      <ul>
-        <li class="foodList" v-for="(item,index) in goods" :key="index">
-          <h1 class="title">{{item.name}}</h1>
-          <ul>
-            <li class="foodItem" v-for="(food,index) in item.foods" :key="index">
-              <div class="icon">
-                <img :src="food.icon" width="57" height="57">
-              </div>
-              <div class="content">
-                <h2 class="name">{{food.name}}</h2>
-                <p class="description">{{food.description}}</p>
-                <div class="extre">
-                  <span class="sellCount">月销{{food.sellCount}}份</span><span class="rating">好评率{{food.rating}}%</span>
+  <div>
+    <div class="goods">
+      <div class="menu-wrapper">
+        <ul>
+          <li class="menu-item" v-for="(item,index) in goods" :key=index>
+            <span class="text">
+              <span class="icon" v-if="item.type>0" :class="classMap[item.type]"></span>{{item.name}}
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="good-wrapper">
+        <ul>
+          <li class="foodList" v-for="(item,index) in goods" :key="index">
+            <h1 class="title">{{item.name}}</h1>
+            <ul>
+              <li @click="seclectFood(food)" class="foodItem" v-for="(food,index) in item.foods" :key="index">
+                <div class="icon">
+                  <img :src="food.icon" width="57" height="57">
                 </div>
-                <div class="price">
-                  <span class="newPrice">￥{{food.price}}</span>
-                  <span v-if='food.oldPrice'>￥{{food.oldPrice}}</span>
-                </div>
-              </div>
-              
-            </li>
-          </ul>
-        </li>
-      </ul>
+                <div class="content">
+                  <h2 class="name">{{food.name}}</h2>
+                  <p class="description">{{food.description}}</p>
+                  <div class="extre">
+                    <span class="sellCount">月销{{food.sellCount}}份</span><span class="rating">好评率{{food.rating}}%</span>
+                  </div>
+                  <div class="price">
+                    <span class="newPrice">￥{{food.price}}</span>
+                    <span v-if='food.oldPrice'>￥{{food.oldPrice}}</span>
+                  </div>
+                </div>     
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
+  <food :food="seclectedFood" ref="food"></food>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import food from '../../components/food/food'
 export default {
   props: {},
   data() {
     return {
-      goods: []
+      goods: [],
+      seclectedFood: {}
     };
+  },
+  components: {
+    food
   },
   created() {
     this.axios
@@ -60,11 +67,27 @@ export default {
         console.log(error);
       });
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
+  },
+  computed: {
+    seclectFoods() {
+      var result = {}
+      this.goods.forEach(function(good) {
+        good.foods.forEach(function(food) {
+        })
+      })
+    }
+  },
+  methods: {
+    seclectFood(food) {
+      console.log(food)
+      this.seclectedFood = food
+      this.$refs.food.show()
+    }
   }
 };
 </script>
 
-<style lang='stylus'>
+<style lang='stylus' rel="stylesheet/stylus">
 @import '../../common/stylus/base'
 
 .goods
@@ -125,7 +148,7 @@ export default {
       padding-bottom 18px
       border-bottom 1px solid rgba(7,17,27,0.1)
       &:last-child
-        border-bottom none 
+        border-bottom none
         padding-bottom none
       .icon
         flex 0 0 57px
@@ -159,12 +182,8 @@ export default {
             color rgb(240,20,20)
           .oldPrice
             font-size 10px
-            font-weight 700
+            font-weight normal
+            text-decoration line-through
             line-height 24px
             color rgb(147,153,159)
-          
-        
-
-
-          
 </style>

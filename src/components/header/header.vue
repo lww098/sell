@@ -220,6 +220,7 @@ export default {
     position fixed
     top 0
     left 0
+    z-index 999
     opacity 1
     background-color rgba(7,17,27,0.8)
     backdrop-filter blur(10px)
