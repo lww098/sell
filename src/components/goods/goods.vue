@@ -186,4 +186,5 @@ export default {
             text-decoration line-through
             line-height 24px
             color rgb(147,153,159)
+            
 </style>
