@@ -64,7 +64,7 @@ import {formatDate} from '../../common/js/data'
 
 export default {
   props: {
-    food: Object,
+    food: Object
   },
   data() {
     return {
@@ -99,21 +99,21 @@ export default {
     addFirst() {
       Vue.set(this.food, "count", 1)
     },
-    needShow(type,text) {
-      if(this.onlyContent && !text){
+    needShow(type, text) {
+      if (this.onlyContent && !text) {
         return false
       }
-      if(this.selectType===2){
+      if (this.selectType === 2) {
         return true
-      }else{
-        return this.selectType===type
+      } else {
+        return this.selectType === type
       }
     }
   },
   filters: {
     formatDate(time) {
       var date = new Date(time)
-      return formatDate(date,'yyyy-MM-dd hh:mm')
+      return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
   components: {
@@ -228,7 +228,7 @@ export default {
       font-size 0
       border-bottom 1px solid rgba(7,17,27,0.1)
       .user
-        position absolute 
+        position absolute
         right 0
         top 16px
         .name
@@ -246,7 +246,7 @@ export default {
         font-size 12px
         line-height 16px
         color rgb(7,17,27)
-        i 
+        i
           margin-right 4px
           font-size 12px
           line-height 16px
@@ -254,7 +254,4 @@ export default {
             color rgb(0,160,220)
           &.icon-thumb_down
             color rgb(147,153,159)
-          
-
-      
 </style>

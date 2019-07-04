@@ -21,12 +21,12 @@
 <script type="text/ecmascript-6">
 const Positive = 0;
 const Negative = 1;
-const all = 3;
+const all = 2;
 export default {
   props: {
     ratings: {
-        type:Array,
-        default(){
+        type: Array,
+        default() {
             return [];
         }
     },
@@ -49,25 +49,23 @@ export default {
       }
     }
   },
-  methods:{
+  methods: {
       select(type) {
-            console.log(this.selectType)
             this.$emit('update:selectType', type)
       },
       toggleContent() {
-            console.log(this.onlyContent)  
-            this.$emit("update:onlyContent",!this.onlyContent)
+            this.$emit("update:onlyContent", !this.onlyContent)
       }
   },
-  computed:{
-      positive(){
+  computed: {
+      positive() {
             return this.ratings.filter((rating) => {
-                return rating.rateType===Positive
+                return rating.rateType === Positive
             })
       },
-      negative(){
+      negative() {
             return this.ratings.filter((rating) => {
-                return rating.rateType===Negative
+                return rating.rateType === Negative
             })
       }
   }

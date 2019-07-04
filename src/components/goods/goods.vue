@@ -29,7 +29,7 @@
                     <span class="newPrice">￥{{food.price}}</span>
                     <span v-if='food.oldPrice'>￥{{food.oldPrice}}</span>
                   </div>
-                </div>     
+                </div>
               </li>
             </ul>
           </li>
@@ -68,13 +68,13 @@ export default {
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
   },
   computed: {
-    seclectFoods() {
-      var result = {}
-      this.goods.forEach(function(good) {
-        good.foods.forEach(function(food) {
-        })
-      })
-    }
+    // seclectFoods() {
+    //   var result = {}
+    //   this.goods.forEach(function(good) {
+    //     good.foods.forEach(function(food) {
+    //     })
+    //   })
+    // }
   },
   methods: {
     seclectFood(food) {
