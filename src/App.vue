@@ -12,7 +12,7 @@
       <router-link to="/sellers">商家</router-link>
     </div>
   </div>
-  <router-view></router-view>
+  <router-view :seller="seller"></router-view>
 </body>
 </template>
 
@@ -32,7 +32,7 @@ export default {
         var res = response.data;
         if (res.error === 0) {
           this.seller = res.data;
-          // console.log(this.seller)
+          console.log(this.seller)
         }
       })
       .catch(function(error) {

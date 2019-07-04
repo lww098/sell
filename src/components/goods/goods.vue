@@ -60,7 +60,6 @@ export default {
         var res = response.data;
         if (res.error === 0) {
           this.goods = res.data;
-          console.log(this.goods)
         }
       })
       .catch(error => {
@@ -79,7 +78,6 @@ export default {
   },
   methods: {
     seclectFood(food) {
-      console.log(food)
       this.seclectedFood = food
       this.$refs.food.show()
     }

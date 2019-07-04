@@ -28,6 +28,27 @@
               <h1 class="title">商品介绍</h1>
               <p class="info">{{food.info}}</p>
             </div>
+            <split></split>
+            <div class="food-ratings">
+              <h1 class="title">商品评价</h1>
+              <ratingselect :desc='desc' :select-type.sync='selectType' :only-content.sync='onlyContent' :ratings='food.ratings'></ratingselect>
+            </div>
+            <div class="ratings-wrapper">
+              <ul class='have-ratings' v-if="food.ratings && food.ratings.length">
+                <li  v-show='needShow(rating.rateType,rating.text)' class="rating-item" v-for="(rating,index) in food.ratings" :key='index'>
+                  <div class="user">
+                    <span class="name">{{rating.username}}</span>
+                    <img :src="rating.avatar" width='12' height="12">
+                  </div>
+                  <div class="time">{{rating.rateTime | formatDate}}</div>
+                  <p class="text">
+                    <i :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></i>
+                    {{rating.text}}
+                  </p>
+                </li>
+              </ul>
+              <div class='no-ratings' v-if='!food.ratings||!food.ratings.length'></div>
+            </div>
           </div>
         </div>
     </transition>
@@ -37,20 +58,31 @@
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll'
 import Vue from 'vue'
-import Split from '../../components/split/split'
+import split from '../../components/split/split'
+import ratingselect from '../../components/ratingselect/ratingselect'
+import {formatDate} from '../../common/js/data'
 
 export default {
   props: {
-    food: Object
+    food: Object,
   },
   data() {
     return {
-      showFlag: false
+      showFlag: false,
+      selectType: 2,
+      onlyContent: false,
+      desc: {
+        all: "全部",
+        positive: "推荐",
+        negative: "吐槽"
+      }
     };
   },
   methods: {
     show() {
       this.showFlag = true
+      this.selectType = 2
+      this.onlyContent = false
       this.$nextTick(() => {
         if (!this.scroll) {
           this.scroll = new BScroll(this.$refs.food, {
@@ -65,11 +97,28 @@ export default {
       this.showFlag = false
     },
     addFirst() {
-      Vue.set(this.food, "count" ,1)
+      Vue.set(this.food, "count", 1)
+    },
+    needShow(type,text) {
+      if(this.onlyContent && !text){
+        return false
+      }
+      if(this.selectType===2){
+        return true
+      }else{
+        return this.selectType===type
+      }
     }
   },
-  components:{
-    Split
+  filters: {
+    formatDate(time) {
+      var date = new Date(time)
+      return formatDate(date,'yyyy-MM-dd hh:mm')
+    }
+  },
+  components: {
+    split,
+    ratingselect
   }
 };
 </script>
@@ -165,4 +214,47 @@ export default {
       font-weight 200
       line-height 24px
       color rgb(77,85,93)
+  .food-ratings
+    padding-top 18px
+    .title
+      font-size 14px
+      margin-left 18px
+      color(7,17,27)
+  .ratings-wrapper
+    margin 0 18px
+    .rating-item
+      padding 12px 0
+      position relative
+      font-size 0
+      border-bottom 1px solid rgba(7,17,27,0.1)
+      .user
+        position absolute 
+        right 0
+        top 16px
+        .name
+          display inline-block
+          margin-right 6px
+          font-size 10px
+          line-height 12px
+          color rgb(147,153,159)
+      .time
+        margin-bottom 6px
+        font-size 10px
+        line-height 12px
+        color rgb(147,153,159)
+      .text
+        font-size 12px
+        line-height 16px
+        color rgb(7,17,27)
+        i 
+          margin-right 4px
+          font-size 12px
+          line-height 16px
+          &.icon-thumb_up
+            color rgb(0,160,220)
+          &.icon-thumb_down
+            color rgb(147,153,159)
+          
+
+      
 </style>
