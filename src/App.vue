@@ -20,27 +20,27 @@
 
 <script>
 import header from "./components/header/header";
-import {urlParse} from './common/js/tools'
+import { urlParse } from "./common/js/tools";
 
 export default {
   data() {
-      return {
-        seller: {
-          id: (() => {
-            var queryParam = urlParse()
-            return queryParam.id
-          })()
-        }
-      };
-    },
+    return {
+      seller: {
+        id: (() => {
+          var queryParam = urlParse();
+          return queryParam.id;
+        })()
+      }
+    };
+  },
   created() {
     this.axios
-      .get("/api/seller?id"+this.seller.id)
+      .get("/api/seller?id" + this.seller.id)
       .then(response => {
         var res = response.data;
         if (res.error === 0) {
-          this.seller = Object.assign({}, this.seller, res.data)
-          console.log(this.seller)
+          this.seller = Object.assign({}, this.seller, res.data);
+          console.log(this.seller);
         }
       })
       .catch(function(error) {
@@ -55,19 +55,27 @@ export default {
 
 // <style lang='stylus'>
 @import './common/stylus/index.styl';
-.tab
+
+.tab {
   display: flex;
-  width 100%
+  width: 100%;
   border-bottom: 1px solid rgba(7, 17, 27, 0.1);
-  .tab-item
+
+  .tab-item {
     height: 40px;
     flex: 1;
     text-align: center;
     line-height: 40px;
-    router-link
+
+    router-link {
       color: rgb(77, 85, 93);
       line-height: 28px;
       font-size: 28px;
-      &.active
+
+      &.active {
         color: rgb(240, 20, 20);
+      }
+    }
+  }
+}
 </style>
