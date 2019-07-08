@@ -1,38 +1,68 @@
 <template>
-  <div class="shopcart">
-    <div class="content">
-      <div class="content-left">
-        <div class="logo-wrapper">
-          <div class="logo" :class="{'heighLight':totalCount>0}">
-            <i class="icon-shopping_cart" :class="{'heighLight':totalCount>0}"></i>
+  <div>
+    <div class="shopcart">
+      <div class="content" @click="toggleList">
+        <div class="content-left">
+          <div class="logo-wrapper">
+            <div class="logo" :class="{'heighLight':totalCount>0}">
+              <i class="icon-shopping_cart" :class="{'heighLight':totalCount>0}"></i>
+            </div>
+            <div class="num" v-show="totalCount>0">{{totalCount}}</div>
           </div>
-          <div class="num" v-show="totalCount>0">{{totalCount}}</div>
+          <div class="price" :class="{'heighLight':totalCount>0}">￥{{totalPrice}}</div>
+          <div class="desc">另需配送费￥{{delivery}}元</div>
         </div>
-        <div class="price" :class="{'heighLight':totalCount>0}">￥{{totalPrice}}</div>
-        <div class="desc">另需配送费￥{{delivery}}元</div>
+        <div class="content-right" :class="payClass" @click.stop.prevent="payCart">{{payDesc}}</div>
       </div>
-      <div class="content-right" :class="payClass">{{payDesc}}</div>
-    </div>
 
-    <div class="ball-wrapper">
-      <div v-for="(ball,index) in balls" :key="index+'1'">
-        <transition
-          name="drop"
-          @before-enter="beforeDrop"
-          @enter="dropping"
-          @after-enter="afterDrop"
-        >
-          <div class="ball" v-show="ball.show">
-            <div class="inner inner-hook"></div>
-          </div>
-        </transition>
+      <div class="ball-wrapper">
+        <div v-for="(ball,index) in balls" :key="index+'1'">
+          <transition
+            name="drop"
+            @before-enter="beforeDrop"
+            @enter="dropping"
+            @after-enter="afterDrop"
+          >
+            <div class="ball" v-show="ball.show">
+              <div class="inner inner-hook"></div>
+            </div>
+          </transition>
+        </div>
       </div>
+      <transition name="fold">
+        <div class="list-wrapper" v-show="listShow">
+          <div class="header">
+            <div class="shopCart">购物车</div>
+            <div class="empty" @click="empty">清空</div>
+          </div>
+          <div class="list-content" ref="list">
+            <ul>
+              <li class="content" v-for="(food,index) in selectFoods" :key="index">
+                <span class="name">{{food.name}}</span>
+                <span class="price">
+                  ￥
+                  <span>{{food.price}}</span>
+                </span>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </transition>
     </div>
+    <div class="mask" v-show="listShow" @click="hideList"></div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import BScroll from "better-scroll";
+import cartcontrol from "../../components/cartcontrol/cartcontrol";
 export default {
+  components: {
+    cartcontrol
+  },
   data() {
     return {
       balls: [
@@ -42,7 +72,8 @@ export default {
         { show: false },
         { show: false }
       ],
-      dropBalls: []
+      dropBalls: [],
+      fold: true
     };
   },
   props: {
@@ -60,6 +91,25 @@ export default {
     }
   },
   methods: {
+    payCart() {
+      if (this.totalPrice > this.minPrice) {
+        window.alert(`总共${this.totalPrice}元`);
+      }
+    },
+    hideList() {
+      this.fold = true;
+    },
+    empty() {
+      this.selectFoods.forEach(food => {
+        food.count = 0;
+      });
+    },
+    toggleList() {
+      if (!this.totalCount) {
+        return;
+      }
+      this.fold = !this.fold;
+    },
     drop(target) {
       this.balls.forEach(ball => {
         if (!ball.show) {
@@ -78,8 +128,6 @@ export default {
           let x = rect.left - 32;
           let y = -(window.innerHeight - rect.top - 22);
           el.style.display = "";
-          console.log(el);
-          console.log(y);
           el.style.webkitTransform = `translate3d(0,${y}px,0)`;
           el.style.transform = `translate3d(0,${y}px,0)`;
           let inner = el.getElementsByClassName("inner-hook")[0];
@@ -108,7 +156,30 @@ export default {
       }
     }
   },
+
   computed: {
+    listShow: {
+      get() {
+        if (!this.totalCount) {
+          console.log(1);
+          return false;
+        }
+        var show = !this.fold;
+        if (show) {
+          this.$nextTick(() => {
+            if (!this.scroll) {
+              console.log(this.$refs.list);
+              this.scroll = new BScroll(this.$refs.list, {
+                click: true
+              });
+            } else {
+              this.scroll.refresh();
+            }
+          });
+        }
+        return show;
+      }
+    },
     totalPrice() {
       var price = 0;
       this.selectFoods.forEach(food => {
@@ -276,5 +347,99 @@ export default {
       }
     }
   }
+
+  .list-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    transform: translate3d(0, -100%, 0);
+
+    &.fold-enter, &.fold-leave-to {
+      transform: translate3d(0, 0, 0);
+    }
+
+    &.fold-enter-active, &.fold-leave-active {
+      transition: all 0.5s;
+    }
+
+    .header {
+      height: 40px;
+      line-height: 40px;
+      background-color: #f3f4f7;
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+
+      .shopCart {
+        font-size: 14px;
+        font-weight: 200;
+        color: rgb(7, 17, 27);
+        float: left;
+      }
+
+      .empty {
+        font-size: 12px;
+        color: rgb(0, 160, 220);
+        float: right;
+      }
+    }
+
+    .list-content {
+      width: 100%;
+      height: 100%;
+      max-height: 217px;
+      overflow: hidden;
+
+      .content {
+        font-size: 0;
+        position: relative;
+        height: 48px;
+        padding: 12px;
+        box-sizing: border-box;
+        background-color: #fff;
+
+        .name {
+          display: inline-block;
+          vertical-align: top;
+          font-size: 14px;
+          line-height: 24px;
+          color: rgb(7, 17, 27);
+        }
+
+        .price {
+          display: inline-block;
+          vertical-align: top;
+          font-size: 0;
+          position: absolute;
+          right: 90px;
+          font-size: 10px;
+          line-height: 24px;
+          color: rgb(240, 20, 20);
+
+          span {
+            font-size: 14px;
+          }
+        }
+
+        .cartcontrol-wrapper {
+          position: absolute;
+          right: 0;
+          bottom: 6px;
+          margin-left: 12px;
+        }
+      }
+    }
+  }
+}
+
+.mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  background-color: rgba(7, 17, 27, 0.6);
 }
 </style>
